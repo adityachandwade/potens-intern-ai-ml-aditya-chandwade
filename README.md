@@ -8,8 +8,6 @@ Built with **FastAPI**, **Google Gemini**, **Streamlit**, **Plotly**, and **Scik
 ![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688)
 ![Streamlit](https://img.shields.io/badge/Streamlit-Dashboard-FF4B4B)
 ![Plotly](https://img.shields.io/badge/Plotly-Analytics-3F4F75)
-![License](https://img.shields.io/badge/License-MIT-green)
-
 ---
 
 ## Table of Contents
