@@ -1,0 +1,11 @@
+{
+  "input": {
+    "customer_name": "Anjali",
+    "complaint": "Loan repayment is not reflected."
+  },
+  "expected_output": {
+    "category": "LOAN",
+    "priority": "P2",
+    "next_tool": "similar_complaint_search"
+  }
+}

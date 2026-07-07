@@ -1,0 +1,11 @@
+{
+  "input": {
+    "customer_name": "Sneha",
+    "complaint": "Refund has not been credited."
+  },
+  "expected_output": {
+    "category": "REFUND",
+    "priority": "P2",
+    "next_tool": "similar_complaint_search"
+  }
+}

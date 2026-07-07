@@ -1,0 +1,11 @@
+{
+  "input": {
+    "customer_name": "Arjun",
+    "complaint": "UPI payment failed but amount was deducted."
+  },
+  "expected_output": {
+    "category": "UPI",
+    "priority": "P1",
+    "next_tool": "transaction_lookup"
+  }
+}

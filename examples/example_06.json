@@ -1,0 +1,11 @@
+{
+  "input": {
+    "customer_name": "Amit",
+    "complaint": "Debit card declined despite sufficient balance."
+  },
+  "expected_output": {
+    "category": "CARD",
+    "priority": "P2",
+    "next_tool": "similar_complaint_search"
+  }
+}

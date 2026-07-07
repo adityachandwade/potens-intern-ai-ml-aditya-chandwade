@@ -1,0 +1,11 @@
+{
+  "input": {
+    "customer_name": "Priya",
+    "complaint": "Loan EMI deducted twice."
+  },
+  "expected_output": {
+    "category": "LOAN",
+    "priority": "P1",
+    "next_tool": "similar_complaint_search"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "input": {
+    "customer_name": "Neha",
+    "complaint": "My account balance is incorrect."
+  },
+  "expected_output": {
+    "category": "ACCOUNT",
+    "priority": "P2",
+    "next_tool": "similar_complaint_search"
+  }
+}

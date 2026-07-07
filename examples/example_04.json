@@ -1,0 +1,11 @@
+{
+  "input": {
+    "customer_name": "Rohan",
+    "complaint": "Unable to login to my account."
+  },
+  "expected_output": {
+    "category": "ACCOUNT",
+    "priority": "P2",
+    "next_tool": "generate_acknowledgement"
+  }
+}

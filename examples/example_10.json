@@ -1,0 +1,11 @@
+{
+  "input": {
+    "customer_name": "Vikas",
+    "complaint": "I have not received cashback promised for my transaction."
+  },
+  "expected_output": {
+    "category": "REWARDS",
+    "priority": "P3",
+    "next_tool": "generate_acknowledgement"
+  }
+}

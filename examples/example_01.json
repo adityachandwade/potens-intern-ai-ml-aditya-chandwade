@@ -1,0 +1,12 @@
+{
+  "input": {
+    "customer_name": "Aditya",
+    "complaint": "Money deducted but receiver did not receive payment.",
+    "transaction_id": "TXN1002"
+  },
+  "expected_output": {
+    "category": "UPI",
+    "priority": "P1",
+    "next_tool": "transaction_lookup"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "input": {
+    "customer_name": "Rahul",
+    "complaint": "Credit card charged twice for one purchase."
+  },
+  "expected_output": {
+    "category": "CARD",
+    "priority": "P1",
+    "next_tool": "similar_complaint_search"
+  }
+}
