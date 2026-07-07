@@ -1,7 +1,9 @@
 from app.agent.decision_engine import classify_complaint
 
-response = classify_complaint(
-    "Money was deducted through UPI but receiver didn't receive the payment."
+decision = classify_complaint(
+
+    "Money deducted through UPI but receiver didn't receive payment."
+
 )
 
-print(response)
+print(decision)
