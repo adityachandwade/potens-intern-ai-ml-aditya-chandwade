@@ -1,0 +1,42 @@
+[
+  {
+    "transaction_id": "TXN1001",
+    "customer_id": "CUST001",
+    "amount": 2500,
+    "status": "SUCCESS",
+    "payment_mode": "UPI",
+    "date": "2026-07-01"
+  },
+  {
+    "transaction_id": "TXN1002",
+    "customer_id": "CUST002",
+    "amount": 1500,
+    "status": "FAILED",
+    "payment_mode": "UPI",
+    "date": "2026-07-02"
+  },
+  {
+    "transaction_id": "TXN1003",
+    "customer_id": "CUST003",
+    "amount": 12000,
+    "status": "PENDING",
+    "payment_mode": "NEFT",
+    "date": "2026-07-03"
+  },
+  {
+    "transaction_id": "TXN1004",
+    "customer_id": "CUST004",
+    "amount": 899,
+    "status": "SUCCESS",
+    "payment_mode": "CARD",
+    "date": "2026-07-04"
+  },
+  {
+    "transaction_id": "TXN1005",
+    "customer_id": "CUST005",
+    "amount": 5600,
+    "status": "FAILED",
+    "payment_mode": "IMPS",
+    "date": "2026-07-05"
+  }
+]

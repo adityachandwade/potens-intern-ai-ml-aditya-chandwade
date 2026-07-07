@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "category": "UPI",
+    "priority": "P1",
+    "complaint": "Money deducted but receiver did not receive payment.",
+    "resolution": "Transaction failed. Refund initiated within 24 hours."
+  },
+  {
+    "id": 2,
+    "category": "CARD",
+    "priority": "P2",
+    "complaint": "Debit card declined at ATM.",
+    "resolution": "Card reactivated after verification."
+  },
+  {
+    "id": 3,
+    "category": "ACCOUNT",
+    "priority": "P2",
+    "complaint": "Unable to login to mobile banking.",
+    "resolution": "Password reset link shared."
+  },
+  {
+    "id": 4,
+    "category": "LOAN",
+    "priority": "P1",
+    "complaint": "Loan EMI deducted twice.",
+    "resolution": "Extra EMI refunded."
+  },
+  {
+    "id": 5,
+    "category": "KYC",
+    "priority": "P2",
+    "complaint": "KYC verification pending for several days.",
+    "resolution": "Documents verified successfully."
+  },
+  {
+    "id": 6,
+    "category": "FRAUD",
+    "priority": "P0",
+    "complaint": "Unauthorized transaction detected.",
+    "resolution": "Account frozen immediately and fraud investigation initiated."
+  },
+  {
+    "id": 7,
+    "category": "UPI",
+    "priority": "P1",
+    "complaint": "UPI transaction stuck in processing.",
+    "resolution": "Transaction completed after bank reconciliation."
+  },
+  {
+    "id": 8,
+    "category": "ACCOUNT",
+    "priority": "P2",
+    "complaint": "Account balance not updated.",
+    "resolution": "Balance refreshed after server synchronization."
+  },
+  {
+    "id": 9,
+    "category": "CARD",
+    "priority": "P1",
+    "complaint": "Credit card charged twice for one purchase.",
+    "resolution": "Duplicate transaction reversed."
+  },
+  {
+    "id": 10,
+    "category": "NET BANKING",
+    "priority": "P2",
+    "complaint": "Unable to transfer funds using net banking.",
+    "resolution": "Service restored after maintenance."
+  }
+]
