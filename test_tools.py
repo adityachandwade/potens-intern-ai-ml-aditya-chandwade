@@ -1,7 +1,17 @@
 from app.tools import (
     transaction_lookup,
-    similar_complaint_search
+    similar_complaint_search,
+    generate_acknowledgement
 )
+
+
+print("=" * 60)
+print("Acknowledgement")
+print("=" * 60)
+
+print(generate_acknowledgement("Aditya"))
+
+print("\n")
 
 print("=" * 60)
 print("Transaction Lookup")
