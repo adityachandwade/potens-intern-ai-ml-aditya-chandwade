@@ -25,7 +25,6 @@ Built with **FastAPI**, **Google Gemini**, **Streamlit**, **Plotly**, and **Scik
 - [Testing](#testing)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
-- [License](#license)
 - [Author](#author)
 
 ---
@@ -35,28 +34,31 @@ Built with **FastAPI**, **Google Gemini**, **Streamlit**, **Plotly**, and **Scik
 Customer complaints in banking are typically categorized and routed manually before reaching the right support team. AEGIS automates this end-to-end by:
 
 1. Understanding a free-text complaint
-2. Assigning a category and priority (P1 / P2 / P3)
+2. Assigning a category and priority (P0 / P1 / P2)
 3. Selecting the appropriate next action
 4. Executing the relevant tool (transaction lookup, similarity search, acknowledgement generation)
 5. Generating a customer-facing acknowledgement
 
-Every decision is returned with transparent reasoning, so the triage output can be audited rather than treated as a black box.
+Every decision is returned with transparent, step-by-step reasoning (`reasoning_trace`) in addition to a final summary (`reasoning` + `why`), so the triage output can be fully audited rather than treated as a black box.
 
 ---
 
 ## Features
 
 - 🤖 AI-powered complaint classification using Gemini
-- 🚦 Color-coded priority assignment (P1 Critical / P2 High / P3 Normal)
+- 🚦 Color-coded priority assignment (**P0 Critical / P1 High / P2 Normal**)
 - 🔧 Real tool calling (not simulated)
 - ⚡ FastAPI REST API with Swagger documentation
-- 📊 Interactive Streamlit dashboard with a configurable backend URL
+- 📊 Interactive, tabbed Streamlit dashboard (Overview / Reasoning / Transaction & Similar Cases / Trace / Analytics) with a configurable backend URL
+- 🔗 Visual decision pipeline showing Complaint → Classify → Tool → Output, with the selected tool highlighted
+- 🧭 Step-by-step reasoning trace rendered as a connected timeline, not just a flat list
 - 🔍 Similar complaint search using TF-IDF
 - 💳 Transaction lookup tool
 - ✉️ Automated customer acknowledgement generation
-- 🧠 Explainable AI output (`reasoning` + `why`)
-- 📈 Live session analytics — priority and category distribution charts
-- 🕘 In-session complaint history with quick recall
+- 🧠 Explainable AI output (`reasoning`, `why`, and `reasoning_trace`)
+- 🔔 Real-time priority alerts (toast notifications) — a P0 complaint is flagged the moment it's triaged
+- 📈 Live session analytics — priority distribution, category distribution, and priority-over-time charts
+- 🕘 In-session complaint history with quick recall, category icons, and priority indicators
 - 📥 One-click JSON report export
 - 📁 Example dataset included
 
@@ -77,6 +79,7 @@ Transaction Lookup  Similar Search  Acknowledgement
         └──────────────┼──────────────┘
                        ▼
                 Final Structured Output
+             (decision + reasoning_trace)
                        │
                        ▼
               Streamlit Dashboard
@@ -147,7 +150,14 @@ POST /triage
     "priority": "P2",
     "next_tool": "generate_acknowledgement",
     "reasoning": "Customer is requesting to schedule a KYC appointment.",
-    "why": "The complaint clearly states the customer wants to do KYC and is asking for a schedule. There isn't a direct scheduling tool, so acknowledging the request is the next logical step."
+    "why": "The complaint clearly states the customer wants to do KYC and is asking for a schedule. There isn't a direct scheduling tool, so acknowledging the request is the next logical step.",
+    "reasoning_trace": [
+      "Complaint mentions KYC and a request for a scheduling slot.",
+      "This matches the KYC category based on the subject of the request.",
+      "No financial loss or urgency indicated, so priority is P2 (Normal).",
+      "No dedicated scheduling tool exists, so generate_acknowledgement is the appropriate next step.",
+      "transaction_lookup and similar_complaint_search are not needed since there is no transaction dispute."
+    ]
   },
   "tool_output": null,
   "similar_cases": [
@@ -158,6 +168,14 @@ POST /triage
   "acknowledgement": "Dear Aditya Chandwade,\n\nWe have successfully received your complaint.\n\nOur support team has started reviewing the issue.\n\nYou will receive an update shortly.\n\nRegards,\nAEGIS Support"
 }
 ```
+
+**Priority scale**
+
+| Value | Meaning  |
+|-------|----------|
+| `P0`  | Critical |
+| `P1`  | High     |
+| `P2`  | Normal   |
 
 Full interactive documentation is available via Swagger once the API is running (see [Getting Started](#getting-started)).
 
@@ -171,15 +189,19 @@ AEGIS/
 │   └── config.toml          # Forces a consistent light theme
 ├── app/
 │   ├── agent/
+│   │   ├── decision_engine.py   # Gemini call + JSON parsing + reasoning_trace fallback
+│   │   ├── prompts.py            # System prompt (category/priority/tool/reasoning_trace)
+│   │   └── gemini_client.py
 │   ├── api/
 │   ├── models/
 │   ├── tools/
+│   ├── schemas.py             # TriageDecision / ComplaintRequest / HealthResponse
 │   └── main.py
 ├── database/
 ├── examples/
 ├── screenshots/
 ├── tests/
-├── streamlit_app.py
+├── streamlit_app.py            # Tabbed dashboard: Overview / Reasoning / Transaction & Similar Cases / Trace / Analytics
 ├── requirements.txt
 └── README.md
 ```
@@ -234,9 +256,15 @@ Create `.streamlit/config.toml` so the dashboard renders consistently regardless
 base = "light"
 primaryColor = "#2563eb"
 backgroundColor = "#f4f6fb"
-secondaryBackgroundColor = "#ffffff"
+secondaryBackgroundColor = "#eef1f8"
 textColor = "#1a2138"
 font = "sans serif"
+
+[server]
+runOnSave = true
+
+[browser]
+gatherUsageStats = false
 ```
 
 ### 6. Run the FastAPI backend
@@ -266,30 +294,34 @@ The dashboard opens at `http://localhost:8501`. Both the backend and the fronten
 ## Dashboard Walkthrough
 
 ### Home & Complaint Input
-The landing view lets a support agent enter the customer's complaint, name, and an optional transaction ID, with the backend API URL configurable from the sidebar.
+The landing view lets a support agent enter the customer's complaint, name, and an optional transaction ID, with the backend API URL and live session stats configurable from the sidebar.
 
 ![Dashboard Home](screenshots/dashboard_home.png)
-![Complaint Input](screenshots/complaint_input.png)
 
-### Triage Summary
-Once analyzed, AEGIS returns a color-coded priority badge along with category, priority, and selected tool — plus a plain-language explanation of the decision.
+### Session Stats & History
+The sidebar tracks total complaints analyzed and critical (P0) count in real time, with a priority-distribution donut chart and a scrollable, icon-coded history of recent analyses.
 
-![Triage Summary](screenshots/triage_summary.png)
+![Session Stats](screenshots/session_stats.png)
+![Recent Analyses](screenshots/recent_analyses.png)
 
-### Transaction Details & Similar Complaints
-If a transaction lookup isn't triggered, the dashboard says so explicitly rather than showing an empty section. Similar historical complaints are pulled via TF-IDF similarity and shown in a sortable table.
+### Triage Overview
+Once analyzed, results open in a tabbed view. The **Overview** tab shows a color-coded priority badge, category/priority/tool/timestamp metric cards, and a visual decision pipeline (Complaint Received → Classified → Tool → Decision Output) with the executed step highlighted.
 
-![Similar Complaints](screenshots/similar_complaints.png)
+![Triage Overview](screenshots/triage_overview.png)
+
+### Reasoning, Transaction & Similar Cases
+The **Reasoning** tab shows the plain-language `reasoning` and `why` behind the decision. The **Transaction & Similar Cases** tab shows transaction lookup results (or explicitly states none were needed) and a TF-IDF similarity table of related historical complaints.
+
+### Reasoning Trace
+The **Trace** tab renders the model's full `reasoning_trace` as a connected step-by-step timeline, so every intermediate judgment behind the final decision is visible and auditable — not just the summary.
 
 ### Customer Acknowledgement
-A ready-to-send acknowledgement message is generated automatically for the customer.
+A ready-to-send acknowledgement message is generated automatically for the customer, shown at the bottom of the Overview tab.
 
 ![Acknowledgement](screenshots/acknowledgement.png)
 
 ### Session Analytics
-As more complaints are analyzed in a session, AEGIS tracks priority and category distribution live, with a downloadable JSON report of the full session.
-
-![Session Analytics](screenshots/session_analytics.png)
+As more complaints are analyzed in a session, the **Analytics** tab tracks priority distribution, category distribution, and priority-over-time live, with a downloadable JSON report of the full session.
 
 ---
 
@@ -307,6 +339,7 @@ Customer Complaint
    Tool Execution
         ↓
  Structured Response
+  (decision + reasoning_trace)
         ↓
 Customer Acknowledgement
 ```
@@ -316,7 +349,7 @@ Customer Acknowledgement
 | Field    | Value                     |
 |----------|---------------------------|
 | Category | KYC                       |
-| Priority | P2 — High                 |
+| Priority | P2 — Normal                |
 | Tool     | generate_acknowledgement  |
 
 ---
@@ -326,10 +359,11 @@ Customer Acknowledgement
 Before deploying or submitting the project, verify the following:
 
 - [ ] `python test_tools.py` runs without errors
-- [ ] `python test_agent.py` returns a structured decision
+- [ ] `python test_agent.py` returns a structured decision including `reasoning_trace`
 - [ ] `python test_orchestrator.py` executes the selected tool and returns the full response
 - [ ] `uvicorn app.main:app --reload` starts the API and Swagger loads at `/docs`
 - [ ] `streamlit run streamlit_app.py` opens the UI and successfully calls the backend
+- [ ] Priority badges/toasts correctly reflect P0/P1/P2 for critical, high, and normal complaints
 - [ ] The `examples/` folder contains sample JSON requests
 - [ ] `.env` and `venv/` are excluded from version control (see `.gitignore`)
 
